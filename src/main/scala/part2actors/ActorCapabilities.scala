@@ -12,13 +12,13 @@ object ActorCapabilities extends App {
        * context.sender is the who last send message
        * sender is the who last send message
        */
-      case "Hi!" => sender() ! "Hello, there!" //replying to a message
-      case message:String => println(s"[${context.self.path}] I have received :: $message")
-      case number:Int => println(s"[$self] I have received a number :: $number")
-      case SpecialMessage(content) => println(s"I have received special message :: $content")
-      case SendMessageToYourself(content) => self ! content
-      case SayHiTo(ref) => ref ! "Hi!" //alice is being passed as the sender
-      case WirelessPhoneMessage(content, ref) => ref forward(content+"s") //I keep the original sender of the WPM
+      case "Hi!" => sender() ! "Hello, there!" //replying to a message Here sender is alice due to self nature //case 1
+      case message:String => println(s"[${context.self.path}] I have received :: $message") //case 2
+      case number:Int => println(s"[$self] I have received a number :: $number") //case 3
+      case SpecialMessage(content) => println(s"I have received special message :: $content") //case 4
+      case SendMessageToYourself(content) => self ! content //case 5
+      case SayHiTo(ref) => ref ! "Hi!" // Here ref is BOB Actor. alice is being passed as the sender //case 6
+      case WirelessPhoneMessage(content, ref) => ref forward(content+"s") //I keep the original sender of the WPM //case 7
     }
   }
 
@@ -44,6 +44,7 @@ object ActorCapabilities extends App {
 
   case class SendMessageToYourself(content:String)
   simpleActor ! SendMessageToYourself("I am an actor and I am proud of it ;)")
+  // case 5 -> case 2
 
   /**
    * 3.Actors can REPLY to messages
