@@ -25,20 +25,27 @@ object ChangingActorBehaviour extends App {
     }
   }
 
-  class StatelessFussyKid extends Actor{
+  class StatelessFussyKid extends Actor {
     import FussyKid._
     import Mom._
 
     override def receive: Receive = happyReceive
 
+    /**
+     * context.become(_, true)
+     *    True means discard the old message handlers or fully replace the old message handler with a new message
+     * context.become(_, false)
+     *    False does the following instead of replacing or discarding the old message handler we will simply stack
+     *    the new message handler on to a stack of message handlers
+     */
     def happyReceive:Receive = {
-      case Food(VEGETABLE) => context.become(sadReceive)//change my receive handler to sadReceive
+      case Food(VEGETABLE) => context.become(sadReceive,false)//change my receive handler to sadReceive
       case Food(CHOCOLATE) =>
       case Ask(_) => sender() ! KidAccept
     }
     def sadReceive:Receive = {
       case Food(VEGETABLE) => //stay sad
-      case Food(CHOCOLATE) => context.become(happyReceive)//change my recieve handle to happyReceive
+      case Food(CHOCOLATE) => context.become(happyReceive,false)//change my recieve handle to happyReceive
       case Ask(_) => sender()!KidReject
     }
   }
@@ -75,6 +82,21 @@ object ChangingActorBehaviour extends App {
       kid receives Food(veg) -> kid will change the handler to sadReceive
       kid receives Ask(play?) -> kid replies with the sadReceive handler =>
     mom receives kidReject
+   */
+
+  /*
+      Food(veg) -> message handler turns to sadReceive
+      Food(chocolate) -> become happyReceive
+
+      with boolean values in context.become
+      Food(veg) -> stack.push(sadReceive)
+      Food(chocolate) -> stack.puch(happyReceive)
+
+      Stack:
+      1. happyReceive
+      2. sadReceive
+      3. happyReceive
+
    */
 
 }
