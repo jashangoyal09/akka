@@ -63,6 +63,9 @@ object ChangingActorBehaviour extends App {
       case MomStart(kidRef) =>
         // test our interaction
         kidRef ! Food(VEGETABLE)
+        kidRef ! Food(VEGETABLE)
+        kidRef ! Food(CHOCOLATE)
+        kidRef ! Food(CHOCOLATE)
         kidRef ! Ask("do you want to play?")
       case KidAccept => println("Yay,my kid is happy")
       case KidReject => println("My kid is sad, but as he's healthy!")
@@ -74,7 +77,7 @@ object ChangingActorBehaviour extends App {
   val mom = system.actorOf(Props[Mom])
   val statelessFussyKid = system.actorOf(Props[StatelessFussyKid])
 
-  mom ! MomStart(fussyKid)
+//  mom ! MomStart(fussyKid)
   mom ! MomStart(statelessFussyKid)
 
   /*
@@ -96,6 +99,18 @@ object ChangingActorBehaviour extends App {
       1. happyReceive
       2. sadReceive
       3. happyReceive
+
+   */
+
+  /*
+      new behavior
+      Food(veg)
+      Food(veg)
+      Food(choco)
+      Food(choco)
+
+      Stack :
+      1. happyReceive
 
    */
 
