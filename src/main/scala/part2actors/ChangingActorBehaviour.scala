@@ -1,6 +1,7 @@
 package part2actors
 
 import akka.actor.{Actor, ActorRef, ActorSystem, Props}
+import part2actors.ChangingActorBehaviour.Counter.{Decrement, Increment, Print}
 import part2actors.ChangingActorBehaviour.Mom.{Food, MomStart}
 
 object ChangingActorBehaviour extends App {
@@ -113,5 +114,34 @@ object ChangingActorBehaviour extends App {
       1. happyReceive
 
    */
+
+  /**
+   * Immutable counter
+   */
+  object Counter{
+    case object Increment
+    case object Decrement
+    case object Print
+  }
+
+  class Counter extends Actor{
+    override def receive: Receive = countReceive(0)
+
+    def countReceive(currentCount:Int):Receive={
+      case Increment =>
+        println(s"[$currentCount] Incrementing")
+        context.become(countReceive(currentCount+1))
+      case Decrement =>
+        println(s"[$currentCount] Decrementing")
+        context.become(countReceive(currentCount-1))
+      case Print => println(s"This is the final count value :: $currentCount")
+    }
+  }
+
+  val actor = system.actorOf(Props[Counter],"counterActor")
+
+  (1 to 5).foreach(_=>actor!Increment)
+  (1 to 5).foreach(_=>actor!Decrement)
+  actor!Print
 
 }

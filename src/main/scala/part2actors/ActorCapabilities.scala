@@ -70,7 +70,6 @@ object ActorCapabilities extends App {
   alice ! WirelessPhoneMessage("Hi",bob) //no sender
 
   /**
-   * Exercise
    *
    * 1. a Counter actor
    *    -Increment
@@ -87,7 +86,7 @@ object ActorCapabilities extends App {
    *    interact with some other kind of actor
    */
 
-  //Exercise 1
+  // 1
 
   object Counter {
     case object Increment
@@ -111,7 +110,7 @@ object ActorCapabilities extends App {
   (1 to 3).foreach(_=>counter!Decrement)
   counter ! Print
 
-  //Exercise 2
+  //2
   object BankAccount{
     case class Deposit(amount:Int)
     case class Withdraw(amount:Int)
